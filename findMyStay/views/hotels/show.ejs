@@ -1,0 +1,114 @@
+<% layout('layouts/boilerplate')%>
+
+<link rel="stylesheet"  href="/styleSheets/stars.css">
+
+<div class="row">
+    <div class="col-6">
+     
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+      
+      <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+          <ol class="carousel-indicators">
+              <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+              <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+              <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+          </ol>
+          <div class="carousel-inner mt-3">
+            <% hotels.images.forEach((img,i)=>{%> 
+              <div class="carousel-item <%= i===0? 'active':'' %>">
+                  <img class="d-block w-100" src="<%=img.url%>" alt="First slide">
+              </div>
+              <% }) %> 
+          </div>
+          <% if(hotels.images.length>1) {%> 
+          <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+          </a>
+          <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="sr-only">Next</span>
+          </a>
+          <% } %> 
+      </div>
+        <div class="card"> 
+            <div class="card-body">
+              <h5 class="card-title"><%=hotels.title%></h5>
+              <p class="card-text"><%=hotels.description%></p>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item text-muted"><%=hotels.location%></li>
+                <li class="list-group-item">Submitted by <%=hotels.author.username%></li>
+                <li class="list-group-item">$<%=hotels.price%>/night</li>
+            </ul>
+            <%if(currentUser && hotels.author.equals(currentUser._id)) { %> 
+            <div class="card-body">
+                <a href="/hotels/<%=hotels._id%>/edit" class="card-link btn btn-info">Edit</a>
+                <form class="d-inline" action="/hotels/<%=hotels._id%>?__method=DELETE" method="POST">
+                    <button class="btn btn-danger">Delete</button>
+                </form>
+              </div>
+              <% } %> 
+          </div>
+    </div>
+    <div class="col-6 mt-3">
+      <div id='map' style='width: 400px; height: 300px;'></div>
+        <% if(currentUser){ %> 
+        <h2>Leave a review</h2>
+        <form action="/hotels/<%=hotels._id%>/reviews" method="POST" class="mb-3 validated-form" novalidate>
+  <div class="mb-3">
+          <fieldset class="starability-basic">
+  <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0" checked aria-label="No rating." />
+  <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+  <label for="first-rate1" title="Terrible">1 star</label>
+  <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+  <label for="first-rate2" title="Not good">2 stars</label>
+  <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+  <label for="first-rate3" title="Average">3 stars</label>
+  <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+  <label for="first-rate4" title="Very good">4 stars</label>
+  <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+  <label for="first-rate5" title="Amazing">5 stars</label>
+</fieldset>
+</div>
+          <div class="mb-3">
+              <label class="form-label" for="body">Review</label>
+              <textarea class="form-control" name="review[body]" id="body" cols="30" rows="4" required></textarea>
+              
+          </div>
+          <button class="btn btn-success">Submit</button>
+        </form>
+        <% } %> 
+      <% for(let review of hotels.reviews) { %>
+      <div class="card mb-3"> 
+          <div class="card-body">
+              <h5 class="card-subtitle mb-2 text-muted">By <%=review.author.username%></h5>
+              <p class="starability-result" data-rating="<%=review.rating%>">
+                Rated: <%=review.rating%>stars
+              </p>
+              <p class="card-text">Review: <%=review.body%> </p>
+              <%if(currentUser && review.author.equals(currentUser._id)) { %> 
+              <form action="/hotels/<%=hotels._id%>/reviews/<%=review._id%>?__method=DELETE" method="POST">
+                <button class="btn btn-sm btn-danger">Delete</button>
+              </form>
+              <% } %> 
+          </div>
+      </div>
+      <% } %> 
+    </div>
+</div>
+
+
+
+<script>
+  const mapToken='<%-process.env.MAPBOX_TOKEN%>';
+  const Stay=<%-JSON.stringify(hotels)%>;
+</script>
+
+
+
+<script src="/javascripts/showPageMap.js"></script>

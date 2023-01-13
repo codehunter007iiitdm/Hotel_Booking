@@ -1,0 +1,36 @@
+<% layout('layouts/boilerplate')%>
+    <div class="row">
+        <h1 class="text-center">Edit Hotel </h1>
+            <div class="col-6 offset-3">
+                <form action="/hotels/<%=editHotel._id%>?__method=PUT" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
+                    <div class="mb-3" >
+                        <label class="form-label" for="title">Title</label>
+                        <input class="form-control" type="text" id="title" name="title" value="<%=editHotel.title%>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="location">Location</label>
+                        <input class="form-control" type="text" id="location" name="location" value="<%=editHotel.location%>" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="image" class="form-label">Add Images</label>
+                        <input type="file" class="form-control" name="image" id="image" multiple>
+                      </div>
+                    <div class="mb-3">
+                    <label class="form-label" for="price">Hotel Price</label>
+                    <div class="input-group">
+                        <span class="input-group-text" id="price-label">$</span>
+                        <input type="text" class="form-control" id="price" placeholder="0.0" aria-label="price" aria-describedby="price-label" name="price" value="<%=editHotel.price%>" required>
+                      </div>
+                      </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="description">Description</label>
+                        <textarea class="form-control" type="text" id="description" name="description" required><%=editHotel.description%></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-info">Update hotel</button>
+                    </div>
+                </form>
+            
+            </div>
+    </div>
+    
